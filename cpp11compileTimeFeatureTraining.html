@@ -89,7 +89,7 @@ foo(NULL);      //we expect foo(const char*) to be called
                                         <section>
                                            <h2>nullptr</h2>
                                            <p>nullptr is more or less <code>const void * nullptr = 0</code></p>
-                                           <pre><code class="cpp">
+                                           <pre><code class="cpp" contenteditable>
 void foo(int a)
 {
     std::cout << "foo" << std::endl;
@@ -126,7 +126,7 @@ int imposible = a + j;                      //nullptr saves the day!
                                 <section>
                                     <section>
                                         <p><strong>Problem</strong> Verbose code</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 std::vector&#60std::pair&#60int,std::string>> vec;
 std::vector&#60std::pair&#60int,std::string>>::const_iterator it = vec.cbegin();
                                         </pre></code>
@@ -211,7 +211,7 @@ for (auto& el : vec)    //element will be reference to element of vector
 for (auto el : vec)     //element will be copy of element of vector
     foo(++el);
 
-for (const el& : vec)   //const refference should be most used snippet
+for (const auto el : vec)   //const refference should be most used snippet
     foo(el);                
                                         </code></pre>
                                     </section>
@@ -252,7 +252,7 @@ for(const auto& el : c)
                                 <section>
                                     <section>
                                     <p><strong>Problem: </strong> Make typedef from function return type</p>
-                                    <pre><code class="cpp">
+                                    <pre><code class="cpp" contenteditable>
 someNamespace::someLongType foo();
 typedef someNamespace::someLongType someAnotherType;
                                     </code></pre>
@@ -260,18 +260,18 @@ typedef someNamespace::someLongType someAnotherType;
                                     <section>
                                         <h2>Decltype</h2>
                                         <p>Operator <code>decltype()</code> extracts type of variable, expresion etc...</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 someNamespace::someLongType foo();
 typedef decltype(foo()) someAnotherType;
                                         </code></pre> 
                                         <p>Decltype can be use to declare type of variable</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 decltype(foo) x;
                                         </code></pre> 
                                     </section>
                                     <section>
                                         <h3>Differences between Auto and Decltype in type deduction</h3>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 struct S {S(){m = 5} int m;};
 int i;
 const int ci = 6;
@@ -297,7 +297,7 @@ decltype((p->m)) d; //const int& d;
                                 <section>
                                     <section>
                                          <p><strong>Problem: </strong> Long named return types could make make headers or cpps hard to read</p>
-                                         <pre><code class="cpp">
+                                         <pre><code class="cpp" contenteditable>
 std::string foo();
 std::vector&#60std::pair&#60int, std::string>> bar();
 STransportBearerRegisterResp* fun();
@@ -305,7 +305,7 @@ STransportBearerRegisterResp* fun();
                                     </section>
                                 <section>
                                     <h2> Alternative Function declaration syntax </h2>
-                                    <pre><code class="cpp">
+                                    <pre><code class="cpp" contenteditable>
 auto foo() -> std::string;
 auto bar() -> std::vector&#60std::pair&#60int, std::string>>;
 auto fun() -> STransportBearerRegisterResp*;
@@ -315,7 +315,7 @@ auto fun() -> STransportBearerRegisterResp*;
                                 <section>
                                     <section>
                                         <p><strong>Problem:</strong> In templates it is not always clear what should be return value of function</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 template&#60typename T, typename U>
 XXXX sum(T a, U b)  
 {
@@ -327,7 +327,7 @@ XXXX sum(T a, U b)
                                     <section>
                                    </code></pre>
                                     <p>It is very usefull in case of metaprograming where we are not sure of returned type</p>
-                                    <pre><code class="cpp">
+                                    <pre><code class="cpp" contenteditable>
 template&#60typename T, typename U>
 auto sum(T a, U b) -> decltype(a+b)
 {
@@ -339,7 +339,7 @@ auto sum(T a, U b) -> decltype(a+b)
 				<section>
                                     <section>
                                         <p><strong>Problem: </strong> Create template class divider parametrized with divider value</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 template&#60int DIV>
 struct Divider
 {
@@ -383,14 +383,14 @@ struct Divider
                                     <section>
                                         <h2>Type Traits</h2>
                                         <p>With type_traits we can check properties of types. All traits all compile time constants and we can use it in static assertions</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 template&#60int DIV>
 struct Divider
 {
     static_assert(DIV != 0, "cannot divide by zero");
     template&#60typename T>
     T operator()(T v) const { 
-        static_assert(std::is_arithmetic&#60T>(), "division of non arithmetic type");
+        static_assert(std::is_arithmetic&#60T>::value, "division of non arithmetic type");
         return v/DIV;
     };
 };
@@ -504,20 +504,20 @@ struct leaf : public branch     // error: cannot derive from 'final'
                                     <section>
                                         <h2></h2>
                                         <p><strong>Problem:</strong> define a noncopyable class with default constructor</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 struct S
 {
-//dont declare default c-tor or you will have to define it
+    S() {};// We declared copy c-tor, we have to declare rest of them
 private:
-    S(const S&) {};
-    S& operator=(const S&) {};
+    S(const S&);
+    S& operator=(const S&);
 }
                                         </code></pre>
                                     </section>
                                      <section>
                                         <h2>Default and Delete</h2>
-                                        <p>Now we can tell compiler if we want to get default implementation of funcions or don't using default and delete keyword</p>
-                                        <pre><code class="cpp">
+                                        <p>Now we can tell compiler if we want to get default implementation of funcions or not, using default and delete keyword</p>
+                                        <pre><code class="cpp" contenteditable>
 struct S
 {
     S() = default;
@@ -755,7 +755,7 @@ avg(Ts... Vs) -> decltype(sum(Vs...)/sizeof...(Vs))
                                 <section>
                                     <section>
                                         <p><strong>Problem: </strong>A lot of different ways to initialize object depends on its type</p> 
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 int i = 0;           
 int i(0);
 int i(); //error -> function declaration
@@ -775,7 +775,7 @@ std::vector&#60int> v = {1,2,3,4,5} // error
                                     <section>
                                         <h2>Uniform initialization syntax and semantics</h2>
                                         <p>C++11 inteoduces new way to initializeation avaible for all types</p>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 int a1{};
 int a2{5};
 
@@ -795,7 +795,7 @@ std::map&#60int, string> m{ {1, "one"}, {2, "two"} };
                                     </section>
                                     <section>
                                         <h2>C++11 default {} initialization</h2>
-                                        <pre><code class="cpp">
+                                        <pre><code class="cpp" contenteditable>
 int i{}         // int i = 0;
 int * i{}       // int *i = nullptr;
 double d{}      // double d=0.0;
@@ -813,7 +813,7 @@ Struct s{}      // all members initialized to 0;
                                         <section>
                                             <h2>Initializer's list</h2>
                                             <p>An object <code>std::initializer_list&#60T></code> allowes us to to get acces to elements provided in {} </p>
-                                            <pre><code class="cpp">
+                                            <pre><code class="cpp" contenteditable>
 template &#60class T>
 struct S {
     std::vector&#60T> v;
@@ -842,7 +842,7 @@ S&#60B> c{5};               //initializer list c-tor again
                                         <section>
                                             <h2>Extern template</h2>
                                             <p>We can inform compiler that concrete instantation of template class will be instantiated in another compilation unit<p>
-                                            <pre><code class="cpp">
+                                            <pre><code class="cpp" contenteditable>
 //template header
 template&#60typename T>
 class someClass
